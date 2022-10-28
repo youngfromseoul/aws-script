@@ -2,9 +2,11 @@ import boto3
 import logging
 import sys
 import argparse
+import pandas as pd
 from botocore.exceptions import ClientError
 from openpyxl import Workbook
 from datetime import datetime
+import pandas as pd
 
 # Arguments
 parser = argparse.ArgumentParser(description='Launch Configurations')
@@ -40,7 +42,7 @@ def describe_launch_configurations(region, lc_name):
     try:
         for page in response_iterator:
             for j in page['LaunchConfigurations']:
-                sg = ', '.join(j['SecurityGroups'])
+                sg = ' / '.join(j['SecurityGroups'])
                 data_tuple = (
                     j['LaunchConfigurationName'],
                     j['ImageId'],
@@ -98,6 +100,9 @@ def write_excel(file):
     # file 저장
     excel_name = 'lc_list_' + datetime.now().strftime('%Y%m%d%H%M') + '.xlsx'
     wb.save(excel_name)
+    # input
+    import_excel = pd.read_excel(excel_name)
+    import_excel.to_csv('./lc_list.csv')
 
 def main():
 
@@ -105,7 +110,6 @@ def main():
 
     try:
         inventory = describe_auto_scaling_groups(aws_region)
-        print(type(inventory[3]))
     except ClientError as e:
         message = 'Error getting inventory, check your credential configuration or try with the -r argument: {}'.format(e)
         logger.error(message)
