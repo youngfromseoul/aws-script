@@ -5,7 +5,7 @@ import sys
 
 from botocore.exceptions import ClientError
 
-csvfile = 'lc_list_test.csv'
+csvfile = 'lc_list.csv'
 
 aws_region = 'ap-northeast-2'
 session = boto3.Session(profile_name='dev')
@@ -39,15 +39,15 @@ def read_csv_tags(filename):
         with open(filename) as file:
             for line in file:
                 line_spl = line.rstrip().split(',')
-                asg_name = line_spl[2]
+                asg_name = line_spl[1]
                 if asg_name not in lc_data: 
                     lc_data[asg_name] = {
-                        'LaunchConfigurationName': line_spl[4], 
-                        'ImageId': line_spl[5],
-                        'KeyName': line_spl[6],
-                        'SG': line_spl[7],
-                        'InstanceType': line_spl[8],
-                        'IamInstanceProfile': line_spl[9]
+                        'LaunchConfigurationName': line_spl[2], 
+                        'ImageId': line_spl[3],
+                        'KeyName': line_spl[4],
+                        'SG': line_spl[5],
+                        'InstanceType': line_spl[6],
+                        'IamInstanceProfile': line_spl[7]
                     }
         return lc_data
 
